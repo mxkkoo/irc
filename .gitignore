@@ -7,4 +7,7 @@
 *.o
 *.obj
 
+# Nvim clutter
+compile_commands.json
+
 .cache/
