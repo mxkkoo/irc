@@ -1,24 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   classes.cpp                                        :+:      :+:    :+:   */
+/*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kyoussou <kyoussou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/07 14:23:20 by kyoussou          #+#    #+#             */
-/*   Updated: 2026/07/07 14:27:29 by kyoussou         ###   ########.fr       */
+/*   Updated: 2026/07/10 16:57:26 by kyoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
-#include <cstdlib>
-#include <cstring>
-#include <fcntl.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <poll.h>
 
 //Constructors
+
+bool	Server::signal = false;
 
 Server::Server(char* av[]) {
 	char*	end;
@@ -28,6 +24,12 @@ Server::Server(char* av[]) {
 
 	if (this->_port < 1 || this->_port > 65535) {
 		throw std::invalid_argument("Port must be between 1 and 65535");
+	}
+}
+
+Server::~Server() {
+	for (size_t i = 0; i < this->_fds.size(); i++) {
+		close(this->_fds[i].fd);
 	}
 }
 
@@ -43,8 +45,15 @@ std::string	Server::getPassword() const {
 
 //Methods
 
+void	Server::handleSignal(int signum) {
+	(void) signum;
+
+	std::cout << std::endl << "Signal";
+}
+
 void	Server::setupSocket() {
-	struct sockaddr_in servAddress = {};
+	struct sockaddr_in	servAddress = {};
+	struct pollfd		serverPoll;
 
 	//socket creation
 
@@ -70,10 +79,31 @@ void	Server::setupSocket() {
 		throw (std::runtime_error("Failed to bind socket"));
 	if (listen(this->_listenSocket, SOMAXCONN) == -1)
 		throw (std::runtime_error("Failed to set socket in listening mode"));
+	
+	serverPoll.fd = this->_listenSocket;
+	serverPoll.events = POLLIN;
+	serverPoll.revents = 0;
+
+	this->_fds.push_back(serverPoll);
 }
 
-void	Server::start()
-{
+//TODO: put the poll stuffs in a utils func
+
+void	Server::start() {
 	setupSocket();
-}
 
+	std::cout << "Server <" << this->_listenSocket << "> Connected" << std::endl;
+
+	while (Server::signal == false) {
+		if (poll(&(this->_fds[0]), _fds.size(), -1) == -1 && Server::signal == false)
+			throw(std::runtime_error("Failed to poll()"));
+
+		for (size_t i = 0; i < this->_fds.size(); i++) {
+			if (this->_fds[i].revents && POLLIN) {
+				if (this->_fds[i].fd == this->_listenSocket) {
+					std::cout << "connection received" << std::endl;
+				}
+			}
+		}
+	}
+}

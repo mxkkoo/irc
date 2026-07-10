@@ -6,12 +6,11 @@
 /*   By: kyoussou <kyoussou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/07 14:19:59 by kyoussou          #+#    #+#             */
-/*   Updated: 2026/07/07 14:20:54 by kyoussou         ###   ########.fr       */
+/*   Updated: 2026/07/10 16:56:25 by kyoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
-#include <cstdlib>
 
 int	main(int ac, char* av[]) {
 	try {	
@@ -20,6 +19,7 @@ int	main(int ac, char* av[]) {
 		
 		Server	serv(av);
 		std::cout << "port: " << serv.getPort() << ", password: " << serv.getPassword() << std::endl;
+		//signal(SIGINT, Server::handleSignal);
 		serv.start();
 	}
 
