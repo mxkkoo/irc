@@ -6,7 +6,7 @@
 /*   By: kyoussou <kyoussou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/07 14:10:08 by kyoussou          #+#    #+#             */
-/*   Updated: 2026/07/10 16:50:56 by kyoussou         ###   ########.fr       */
+/*   Updated: 2026/07/10 18:22:57 by kyoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <cstring>
+#include <cstdio>
 #include <fcntl.h>
 #include <unistd.h>
 #include <sys/socket.h>
@@ -23,13 +24,14 @@
 #include <poll.h>
 #include <vector>
 
+#include "Client.hpp"
+
 class Server
 {
 	private:
-		static bool					signal;
-
 		int							_port;
 		std::string					_password;
+		std::vector<Client>			_clients;
 		std::vector<struct pollfd>	_fds;
 		int							_listenSocket;
 
@@ -40,7 +42,7 @@ class Server
 		int			getPort() const;
 		std::string	getPassword() const;
 		
-		void		handleSignal(int signum);
 		void		setupSocket();
 		void		start();
+		void		mainLoop();
 };

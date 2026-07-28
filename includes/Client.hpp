@@ -1,31 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.cpp                                           :+:      :+:    :+:   */
+/*   Client.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kyoussou <kyoussou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/07/07 14:19:59 by kyoussou          #+#    #+#             */
-/*   Updated: 2026/07/10 16:56:25 by kyoussou         ###   ########.fr       */
+/*   Created: 2026/07/10 16:32:10 by kyoussou          #+#    #+#             */
+/*   Updated: 2026/07/10 18:30:29 by kyoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Server.hpp"
+#pragma once
 
-int	main(int ac, char* av[]) {
-	try {	
-		if (ac != 3) {
-			throw (std::invalid_argument("./ircserv [port] [password]"));
-		}
+#include <iostream>
+#include <poll.h>
 
-		Server	serv(av);
+class Client
+{
+	private:
+		struct pollfd	_pollfd;
 
-		serv.start();
-		//signal(SIGINT, Server::handleSignal);
-	}
-	catch(const std::exception& e) {
-		std::cerr << e.what() << std::endl;
-	}
+	public:
+		Client();
+		~Client();
 
-	return (0);
-}
+		struct pollfd	getPollFd();
+};
