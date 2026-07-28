@@ -31,9 +31,11 @@ class Server
 	private:
 		int							_port;
 		std::string					_password;
-		std::vector<Client>			_clients;
-		std::vector<struct pollfd>	_fds;
+
 		int							_listenSocket;
+		std::vector<Client>			_clients;
+		std::vector<struct pollfd>	_pollFds;
+
 
 	public:
 		Server(char* av[]);
@@ -45,4 +47,7 @@ class Server
 		void		setupSocket();
 		void		start();
 		void		mainLoop();
+
+		void		newClient();
+		void		receiveData(struct pollfd pollFd);
 };

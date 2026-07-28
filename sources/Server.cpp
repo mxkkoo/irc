@@ -49,7 +49,7 @@ void	Server::start() {
 	_listenSocket = socket(AF_INET, SOCK_STREAM, 0);
 
 	if (_listenSocket == -1) {
-		throw std::runtime_error("Socket error");
+		throw std::runtime_error("socket() error");
 	}
 
 	setupSocket();
@@ -59,7 +59,7 @@ void	Server::start() {
 	serverPollFd.fd = this->_listenSocket;
 	serverPollFd.events = POLLIN;
 	serverPollFd.revents = 0;
-	_fds.push_back(serverPollFd);
+	_pollFds.push_back(serverPollFd);
 
 	mainLoop();
 }
@@ -71,10 +71,10 @@ void	Server::setupSocket() {
 	int 				enable = 1;
 
 	if (setsockopt(this->_listenSocket, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(int)) == -1) {
-		throw (std::runtime_error("Failed to set option SO_REUSEADDR"));
+		throw (std::runtime_error("setsockopt() error"));
 	}
 	if (fcntl(this->_listenSocket, F_SETFL, O_NONBLOCK) == -1) {
-		throw (std::runtime_error("Failed to set socket as non-blocking"));
+		throw (std::runtime_error("fcntl() error"));
 	}
 
 	std::memset(&servAddress, 0, sizeof(servAddress));
@@ -83,17 +83,41 @@ void	Server::setupSocket() {
 	servAddress.sin_port = htons(this->_port);
 
 	if (bind(this->_listenSocket, (struct sockaddr *) &servAddress, sizeof(sockaddr_in)) == -1) {
-		throw (std::runtime_error("Failed to bind socket"));
+		throw (std::runtime_error("bind() error"));
 	}
 	if (listen(this->_listenSocket, SOMAXCONN) == -1) {
-		throw (std::runtime_error("Failed to set socket in listening mode"));
+		throw (std::runtime_error("listen() error"));
 	}
 }
 
 void	Server::mainLoop() {
-//Main loop; checks all sockets using poll() for incoming data or new connections
+//Main loop; checks FDs for new connections, then incoming data
 
 	while (true) {
-		poll(_fds.data(), _fds.size(), -1);
+		if (poll(_pollFds.data(), _pollFds.size(), -1) == -1) {
+			throw (std::runtime_error("poll() error"));
+		}
+
+		if (_pollFds[0].revents & POLLIN) {
+			newClient();
+		}
+
+		for (size_t i = 1; i < _pollFds.size(); i++) {
+			if (_pollFds[i].revents & POLLIN) {
+				receiveData(_pollFds[i]);
+			}
+		}
 	}
+}
+
+// TODO: Data functions
+
+void	Server::newClient() {
+//Adds a new client and gives it its own pollFd
+
+}
+
+void	Server::receiveData(struct pollfd pollFd) {
+//Handles data sent from a stored pollFd
+
 }
