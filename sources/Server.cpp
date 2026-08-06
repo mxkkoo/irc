@@ -70,10 +70,10 @@ void	Server::setupSocket() {
 	struct sockaddr_in	servAddress = {};
 	int 				enable = 1;
 
-	if (setsockopt(this->_listenSocket, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(int)) == -1) {
+	if (setsockopt(_listenSocket, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(int)) == -1) {
 		throw (std::runtime_error("setsockopt() error"));
 	}
-	if (fcntl(this->_listenSocket, F_SETFL, O_NONBLOCK) == -1) {
+	if (fcntl(_listenSocket, F_SETFL, O_NONBLOCK) == -1) {
 		throw (std::runtime_error("fcntl() error"));
 	}
 
@@ -82,10 +82,10 @@ void	Server::setupSocket() {
 	servAddress.sin_addr.s_addr = INADDR_ANY;
 	servAddress.sin_port = htons(this->_port);
 
-	if (bind(this->_listenSocket, (struct sockaddr *) &servAddress, sizeof(sockaddr_in)) == -1) {
+	if (bind(_listenSocket, (struct sockaddr *) &servAddress, sizeof(sockaddr_in)) == -1) {
 		throw (std::runtime_error("bind() error"));
 	}
-	if (listen(this->_listenSocket, SOMAXCONN) == -1) {
+	if (listen(_listenSocket, SOMAXCONN) == -1) {
 		throw (std::runtime_error("listen() error"));
 	}
 }
@@ -110,14 +110,49 @@ void	Server::mainLoop() {
 	}
 }
 
-// TODO: Data functions
+//TODO: Data functions
 
 void	Server::newClient() {
 //Adds a new client and gives it its own pollFd
 
+	Client				newClient;
+	struct sockaddr_in	clientAddress;
+	struct pollfd		clientPoll;
+	socklen_t			len = sizeof(clientAddress);
+	int					clientFd;
+
+	clientFd = accept(_listenSocket, (struct sockaddr *) &clientAddress, &len);
+
+	if (clientFd == -1)
+		throw (std::runtime_error("accept() failed (client)"));
+
+	if (fcntl(clientFd, F_SETFL, O_NONBLOCK) == -1)
+		throw (std::runtime_error("fcntl() failed (client)"));
+
+	clientPoll.fd = clientFd;
+	clientPoll.events = POLLIN;
+	clientPoll.revents = 0;
+	_pollFds.push_back(clientPoll);
+
+	std::cout << "Client " << clientFd << " connected" << std::endl;
 }
 
 void	Server::receiveData(struct pollfd pollFd) {
 //Handles data sent from a stored pollFd
+	
+	char	buff[1024];
 
+	memset(buff, 0, sizeof(buff));
+
+	ssize_t	bytes = recv(pollFd.fd, buff, sizeof(buff) - 1, 0);
+
+	if (bytes <= 0) {
+		std::cout << "Client " << pollFd.fd << " disconnected" << std::endl;
+		close(pollFd.fd);
+	}
+
+	else {
+		buff[bytes] = '\0';
+		std::cout << "Client " << pollFd.fd << " data: " << buff << std::endl;
+	}
 }
