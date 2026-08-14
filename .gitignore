@@ -1,13 +1,12 @@
-# Prerequisites
-*.d
-
-# Compiled Object files
+#Object files
 *.slo
 *.lo
 *.o
 *.obj
 
-# Nvim clutter
-compile_commands.json
+#Executable
+ircserv
 
+#Misc
+compile_commands.json
 .cache/
