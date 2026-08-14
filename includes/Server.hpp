@@ -36,6 +36,7 @@ class Server
 		std::vector<Client>			_clients;
 		std::vector<struct pollfd>	_pollFds;
 
+		static bool					_signal;
 
 	public:
 		Server(char* av[]);
@@ -44,10 +45,14 @@ class Server
 		int			getPort() const;
 		std::string	getPassword() const;
 		
-		void		setupSocket();
+		static void	handleSignal(int signum);
+
 		void		start();
 		void		mainLoop();
-
 		void		newClient();
 		void		receiveData(struct pollfd pollFd);
+
+		void		setupSocket();
+		void		addFd(int fd);
+		void		closeSocket();
 };

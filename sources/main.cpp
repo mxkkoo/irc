@@ -20,8 +20,9 @@ int	main(int ac, char* av[]) {
 
 		Server	serv(av);
 
+		signal(SIGINT, Server::handleSignal);
+		signal(SIGQUIT, Server::handleSignal);
 		serv.start();
-		//signal(SIGINT, Server::handleSignal);
 	}
 	catch(const std::exception& e) {
 		std::cerr << e.what() << std::endl;
