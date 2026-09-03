@@ -128,6 +128,7 @@ void	Server::mainLoop() {
 void	Server::newClient() {
 //Adds a new client and gives it its own pollFd
 
+	Client				client;
 	int					clientFd;
 	struct sockaddr_in	clientAddress;
 	socklen_t			len = sizeof(clientAddress);
@@ -143,6 +144,8 @@ void	Server::newClient() {
 	}
 
 	addFd(clientFd);
+	client.setFd(clientFd);
+	_clients.push_back(client);
 
 	std::cout << "Client " << clientFd << " connected" << std::endl;
 }
@@ -154,18 +157,18 @@ void	Server::receiveData(struct pollfd pollFd) {
 
 	memset(buff, 0, sizeof(buff));
 
-	ssize_t	bytes = recv(pollFd.fd, buff, sizeof(buff) - 1, 0);
+	ssize_t	len = recv(pollFd.fd, buff, sizeof(buff) - 1, 0);
 
-	if (bytes <= 0) {
+	if (len <= 0) {
 		std::cout << "Client " << pollFd.fd << " disconnected" << std::endl;
 		close(pollFd.fd);
-		throw(std::runtime_error("Client disconnected"));
+		throw (std::runtime_error("Client disconnected"));
 	}
 
-	else {
-		buff[bytes] = '\0';
-		std::cout << "Client " << pollFd.fd << " data: " << buff << std::endl;
-	}
+	Client& client = getClientByFd(pollFd.fd);
+	client.addToBuffer(buff, len);
+
+	std::cout << "Client " << client.getFd() << " buffer: " << client.getBuffer() << std::endl;
 }
 
 //Helpers
@@ -187,4 +190,16 @@ void	Server::closeSocket() {
 	for (size_t i = 0; i < _pollFds.size(); i++) {
 		close(_pollFds[i].fd);
 	}
+}
+
+Client&	Server::getClientByFd(int fd) {
+//Returns the client with the corresponding FD
+
+	for (size_t i = 0; i < _clients.size(); i ++) {
+		if (_clients[i].getFd() == fd) {
+			return (_clients[i]);
+		}
+	}
+
+	throw (std::runtime_error("Client not found"));
 }

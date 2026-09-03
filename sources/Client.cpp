@@ -20,6 +20,20 @@ Client::~Client() {
 
 }
 
-struct pollfd	Client::getPollFd() {
-	return (this->_pollfd);
+int			Client::getFd() {
+	return (_fd);
+}
+
+std::string	Client::getBuffer() {
+	return (_buffer);
+}
+
+void	Client::setFd(int fd) {
+	_fd = fd;
+}
+
+void	Client::addToBuffer(const char* data, size_t len) {
+//Appends [data] to the client buffer
+
+	_buffer.append(data, len);
 }

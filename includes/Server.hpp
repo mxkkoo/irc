@@ -55,4 +55,5 @@ class Server
 		void		setupSocket();
 		void		addFd(int fd);
 		void		closeSocket();
+		Client&		getClientByFd(int fd);
 };

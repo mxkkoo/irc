@@ -18,11 +18,16 @@
 class Client
 {
 	private:
-		struct pollfd	_pollfd;
+		int				_fd;
+		std::string		_buffer;
 
 	public:
 		Client();
 		~Client();
 
-		struct pollfd	getPollFd();
+		int			getFd();
+		std::string	getBuffer();
+
+		void	setFd(int fd);
+		void	addToBuffer(const char* data, size_t len);
 };
