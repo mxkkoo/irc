@@ -151,7 +151,7 @@ void	Server::newClient() {
 }
 
 void	Server::receiveData(struct pollfd pollFd) {
-//Handles data sent from a stored pollFd
+//Handles data sent from [pollFd]
 	
 	char	buff[1024];
 
@@ -174,7 +174,7 @@ void	Server::receiveData(struct pollfd pollFd) {
 //Helpers
 
 void	Server::addFd(int fd) {
-//Adds the new FD to the pollFd vector
+//Adds [fd] to the pollFd vector
 
 	struct pollfd	newPollFd;
 
@@ -193,7 +193,7 @@ void	Server::closeSocket() {
 }
 
 Client&	Server::getClientByFd(int fd) {
-//Returns the client with the corresponding FD
+//Returns the client with the corresponding [fd]
 
 	for (size_t i = 0; i < _clients.size(); i ++) {
 		if (_clients[i].getFd() == fd) {
