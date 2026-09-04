@@ -60,8 +60,10 @@ void	Client::processBuffer() {
 		}
 
 		_buffer.erase(0, pos + 1);
-
+		
 		if (!line.empty())
-			(void) line; //handleLine goes here
+			std::cout << line << std::endl; //handleLine goes here
+
+		pos = _buffer.find('\n');
 	}
 }

@@ -18,6 +18,7 @@ CFLAGS = -Wall -Werror -Wextra -Iincludes -std=c++98
 FILES = main.cpp \
 		Server.cpp \
 		Client.cpp \
+		utilities/serverUtils.cpp \
 
 SRC = $(addprefix sources/, $(FILES))
 

@@ -11,6 +11,14 @@
 /* ************************************************************************** */
 
 #include "Server.hpp"
+#include "Client.hpp"
+#include "utilities.hpp"
+#include <cstdlib>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <cstring>
 
 //Constructors
 
@@ -57,39 +65,12 @@ void	Server::start() {
 		throw std::runtime_error("socket() error");
 	}
 
-	setupSocket();
+	setupSocket(_listenSocket, _port);
 
 	std::cout << "Server <" << this->_listenSocket << "> connected" << std::endl;
 
-	addFd(_listenSocket);
+	addFdToPoll(_listenSocket, _pollFds);
 	mainLoop();
-}
-
-void	Server::setupSocket() {
-// Sets all necessary options the server listenSocket
-
-	struct sockaddr_in	servAddress = {};
-	int 				enable = 1;
-
-	if (setsockopt(_listenSocket, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(int)) == -1) {
-		throw (std::runtime_error("setsockopt() error"));
-	}
-	if (fcntl(_listenSocket, F_SETFL, O_NONBLOCK) == -1) {
-		throw (std::runtime_error("fcntl() error"));
-	}
-
-	std::memset(&servAddress, 0, sizeof(servAddress));
-
-	servAddress.sin_family = AF_INET;
-	servAddress.sin_addr.s_addr = INADDR_ANY;
-	servAddress.sin_port = htons(this->_port);
-
-	if (bind(_listenSocket, (struct sockaddr *) &servAddress, sizeof(sockaddr_in)) == -1) {
-		throw (std::runtime_error("bind() error"));
-	}
-	if (listen(_listenSocket, SOMAXCONN) == -1) {
-		throw (std::runtime_error("listen() error"));
-	}
 }
 
 void	Server::mainLoop() {
@@ -122,7 +103,7 @@ void	Server::mainLoop() {
 		}
 	}
 
-	closeSocket();
+	closeSocket(_pollFds);
 
 	std::cout << "Server shutting down" << std::endl;
 }
@@ -135,8 +116,8 @@ void	Server::newClient() {
 	struct sockaddr_in	clientAddress;
 	socklen_t			len;
 
-	clientFd = accept(_listenSocket, (struct sockaddr *) &clientAddress, &len);
 	len = sizeof(clientAddress);
+	clientFd = accept(_listenSocket, (struct sockaddr *) &clientAddress, &len);
 
 	if (clientFd == -1)
 		throw (std::runtime_error("accept() failed (client)"));
@@ -146,7 +127,7 @@ void	Server::newClient() {
 		throw (std::runtime_error("fcntl() failed (client)"));
 	}
 
-	addFd(clientFd);
+	addFdToPoll(clientFd, _pollFds);
 	client.setFd(clientFd);
 	_clients.insert(std::make_pair(clientFd, client));
 
@@ -174,7 +155,7 @@ void	Server::receiveData(struct pollfd pollFd) {
 	
 	char	buff[1024];
 
-	memset(buff, 0, sizeof(buff));
+	std::memset(buff, 0, sizeof(buff));
 
 	ssize_t	len = recv(pollFd.fd, buff, sizeof(buff) - 1, 0);
 
@@ -182,46 +163,8 @@ void	Server::receiveData(struct pollfd pollFd) {
 		throw (std::runtime_error("Client disconnected"));
 	}
 
-	Client& client = getClientByFd(pollFd.fd);
+	Client& client = getClientByFd(pollFd.fd, _clients);
 
 	client.addToBuffer(buff, len);
 	client.processBuffer();
-
-	std::cout << "Client " << client.getFd() << " buffer: " << client.getBuffer() << std::endl;
-}
-
-//Helpers
-
-void	Server::addFd(int fd) {
-//Adds [fd] to the pollFd vector
-
-	struct pollfd	newPollFd;
-
-	newPollFd.fd = fd;
-	newPollFd.events = POLLIN;
-	newPollFd.revents = 0;
-
-	_pollFds.push_back(newPollFd);
-}
-
-void	Server::closeSocket() {
-//Closes the socket and all bound FDs
-
-	for (size_t i = 0; i < _pollFds.size(); i++) {
-		close(_pollFds[i].fd);
-	}
-}
-
-Client&	Server::getClientByFd(int fd) {
-//Returns the client with the corresponding [fd]
-
-	std::map<int, Client>::iterator	it;
-	
-	it = _clients.find(fd);
-
-	if (it == _clients.end()) {
-		throw (std::runtime_error("Invalid FD"));
-	}
-
-	return (it->second);
 }

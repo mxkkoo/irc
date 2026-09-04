@@ -12,20 +12,10 @@
 
 #pragma once
 
-#include <iostream>
-#include <cstdlib>
-#include <cstring>
-#include <cstdio>
-#include <fcntl.h>
-#include <unistd.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <csignal>
+#include "Client.hpp"
 #include <poll.h>
 #include <vector>
 #include <map>
-
-#include "Client.hpp"
 
 class Server
 {
@@ -53,9 +43,4 @@ class Server
 		void		newClient();
 		void		removeClient(int fd);
 		void		receiveData(struct pollfd pollFd);
-
-		void		setupSocket();
-		void		addFd(int fd);
-		void		closeSocket();
-		Client&		getClientByFd(int fd);
 };
