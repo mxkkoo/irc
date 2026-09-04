@@ -20,11 +20,11 @@ Client::~Client() {
 
 }
 
-int			Client::getFd() {
+int				Client::getFd() {
 	return (_fd);
 }
 
-std::string	Client::getBuffer() {
+std::string&	Client::getBuffer() {
 	return (_buffer);
 }
 

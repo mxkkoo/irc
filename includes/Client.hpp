@@ -25,8 +25,8 @@ class Client
 		Client();
 		~Client();
 
-		int			getFd();
-		std::string	getBuffer();
+		int				getFd();
+		std::string&	getBuffer();
 
 		void	setFd(int fd);
 		void	addToBuffer(const char* data, size_t len);
