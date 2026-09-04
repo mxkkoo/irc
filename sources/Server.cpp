@@ -79,6 +79,7 @@ void	Server::setupSocket() {
 	}
 
 	std::memset(&servAddress, 0, sizeof(servAddress));
+
 	servAddress.sin_family = AF_INET;
 	servAddress.sin_addr.s_addr = INADDR_ANY;
 	servAddress.sin_port = htons(this->_port);
@@ -122,6 +123,7 @@ void	Server::mainLoop() {
 	}
 
 	closeSocket();
+
 	std::cout << "Server shutting down" << std::endl;
 }
 
@@ -131,9 +133,10 @@ void	Server::newClient() {
 	Client				client;
 	int					clientFd;
 	struct sockaddr_in	clientAddress;
-	socklen_t			len = sizeof(clientAddress);
+	socklen_t			len;
 
 	clientFd = accept(_listenSocket, (struct sockaddr *) &clientAddress, &len);
+	len = sizeof(clientAddress);
 
 	if (clientFd == -1)
 		throw (std::runtime_error("accept() failed (client)"));
@@ -153,9 +156,6 @@ void	Server::newClient() {
 void	Server::removeClient(int fd) {
 //Removes the client from [_pollFds], [_clients] and closes [fd]
 
-
-	close(fd);
-
 	for (size_t i = 0; i < _pollFds.size(); i++) {
 		if (_pollFds[i].fd == fd) {
 			_pollFds.erase(_pollFds.begin() + i);
@@ -164,6 +164,8 @@ void	Server::removeClient(int fd) {
 	}
 
 	_clients.erase(fd);
+	close(fd);
+
 	std::cout << "Client " << fd << " disconnected" << std::endl;
 }
 
@@ -181,7 +183,9 @@ void	Server::receiveData(struct pollfd pollFd) {
 	}
 
 	Client& client = getClientByFd(pollFd.fd);
+
 	client.addToBuffer(buff, len);
+	client.processBuffer();
 
 	std::cout << "Client " << client.getFd() << " buffer: " << client.getBuffer() << std::endl;
 }
@@ -196,6 +200,7 @@ void	Server::addFd(int fd) {
 	newPollFd.fd = fd;
 	newPollFd.events = POLLIN;
 	newPollFd.revents = 0;
+
 	_pollFds.push_back(newPollFd);
 }
 

@@ -12,6 +12,8 @@
 
 #include "Client.hpp"
 
+//Constructors
+
 Client::Client() {
 
 }
@@ -19,6 +21,8 @@ Client::Client() {
 Client::~Client() {
 
 }
+
+//Getters
 
 int				Client::getFd() {
 	return (_fd);
@@ -28,6 +32,8 @@ std::string&	Client::getBuffer() {
 	return (_buffer);
 }
 
+//Methods
+
 void	Client::setFd(int fd) {
 	_fd = fd;
 }
@@ -36,4 +42,26 @@ void	Client::addToBuffer(const char* data, size_t len) {
 //Appends [data] to the client buffer
 
 	_buffer.append(data, len);
+}
+
+void	Client::processBuffer() {
+//Processes the buffer; removes \n 
+	
+	std::string	line;
+	size_t		pos;
+
+	pos = _buffer.find('\n');
+
+	while (pos != std::string::npos) {
+		line = _buffer.substr(0, pos);
+
+		if (!line.empty() && line[line.size() - 1] == '\r') {
+			line.erase(line.size() - 1);
+		}
+
+		_buffer.erase(0, pos + 1);
+
+		if (!line.empty())
+			(void) line; //handleLine goes here
+	}
 }
