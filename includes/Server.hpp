@@ -23,6 +23,7 @@
 #include <csignal>
 #include <poll.h>
 #include <vector>
+#include <map>
 
 #include "Client.hpp"
 
@@ -33,7 +34,7 @@ class Server
 		std::string					_password;
 
 		int							_listenSocket;
-		std::vector<Client>			_clients;
+		std::map<int, Client>		_clients;
 		std::vector<struct pollfd>	_pollFds;
 
 		static bool					_signal;
@@ -50,6 +51,7 @@ class Server
 		void		start();
 		void		mainLoop();
 		void		newClient();
+		void		removeClient(int fd);
 		void		receiveData(struct pollfd pollFd);
 
 		void		setupSocket();

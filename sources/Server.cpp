@@ -114,7 +114,7 @@ void	Server::mainLoop() {
 					receiveData(_pollFds[i]);
 				}
 				catch(std::exception& e) {
-					_pollFds.erase(_pollFds.begin() + i);
+					removeClient(_pollFds[i].fd);
 					i --;
 				}
 			}
@@ -145,9 +145,26 @@ void	Server::newClient() {
 
 	addFd(clientFd);
 	client.setFd(clientFd);
-	_clients.push_back(client);
+	_clients.insert(std::make_pair(clientFd, client));
 
 	std::cout << "Client " << clientFd << " connected" << std::endl;
+}
+
+void	Server::removeClient(int fd) {
+//Removes the client from [_pollFds], [_clients] and closes [fd]
+
+
+	close(fd);
+
+	for (size_t i = 0; i < _pollFds.size(); i++) {
+		if (_pollFds[i].fd == fd) {
+			_pollFds.erase(_pollFds.begin() + i);
+			break;
+		}
+	}
+
+	_clients.erase(fd);
+	std::cout << "Client " << fd << " disconnected" << std::endl;
 }
 
 void	Server::receiveData(struct pollfd pollFd) {
@@ -160,8 +177,6 @@ void	Server::receiveData(struct pollfd pollFd) {
 	ssize_t	len = recv(pollFd.fd, buff, sizeof(buff) - 1, 0);
 
 	if (len <= 0) {
-		std::cout << "Client " << pollFd.fd << " disconnected" << std::endl;
-		close(pollFd.fd);
 		throw (std::runtime_error("Client disconnected"));
 	}
 
@@ -195,11 +210,13 @@ void	Server::closeSocket() {
 Client&	Server::getClientByFd(int fd) {
 //Returns the client with the corresponding [fd]
 
-	for (size_t i = 0; i < _clients.size(); i ++) {
-		if (_clients[i].getFd() == fd) {
-			return (_clients[i]);
-		}
+	std::map<int, Client>::iterator	it;
+	
+	it = _clients.find(fd);
+
+	if (it == _clients.end()) {
+		throw (std::runtime_error("Invalid FD"));
 	}
 
-	throw (std::runtime_error("Client not found"));
+	return (it->second);
 }
