@@ -36,6 +36,8 @@ std::vector<std::string>	parseLine(std::string& line) {
 		if (spacePos != i) {
 			tokens.push_back(line.substr(i, spacePos - i));
 		}
+
+		i = spacePos + 1;
 	}
 
 	return (tokens);
