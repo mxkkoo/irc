@@ -19,6 +19,7 @@ FILES = main.cpp \
 		Server.cpp \
 		Client.cpp \
 		utilities/serverUtils.cpp \
+		utilities/clientUtils.cpp \
 
 SRC = $(addprefix sources/, $(FILES))
 

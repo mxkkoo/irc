@@ -12,7 +12,7 @@
 
 #pragma once
 
-#include <iostream>
+#include <string>
 #include <poll.h>
 
 class Client
@@ -31,4 +31,5 @@ class Client
 		void	setFd(int fd);
 		void	addToBuffer(const char* data, size_t len);
 		void	processBuffer();
+		void	processLine(std::string& line);
 };

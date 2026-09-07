@@ -11,6 +11,9 @@
 /* ************************************************************************** */
 
 #include "Client.hpp"
+#include "utilities.hpp"
+#include <iostream>
+#include <vector>
 
 //Constructors
 
@@ -45,7 +48,7 @@ void	Client::addToBuffer(const char* data, size_t len) {
 }
 
 void	Client::processBuffer() {
-//Processes the buffer; removes \n 
+//Processes the buffer; extracts lines
 	
 	std::string	line;
 	size_t		pos;
@@ -66,4 +69,20 @@ void	Client::processBuffer() {
 
 		pos = _buffer.find('\n');
 	}
+}
+
+void	Client::processLine(std::string& line) {
+//Processes lines extracted from the buffer; tokenizes and dispatch lines
+
+	std::vector<std::string>	tokens;
+	std::string					command;
+
+	tokens = parseLine(line);
+
+	if (tokens.empty())
+		return;
+
+	command = tokens[0];
+
+	tokens.erase(tokens.begin());
 }

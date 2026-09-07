@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "Server.hpp"
+#include <iostream>
 #include <signal.h>
 
 int	main(int ac, char* av[]) {
