@@ -13,12 +13,14 @@
 #include "Server.hpp"
 #include "Client.hpp"
 #include "utilities.hpp"
+#include <iostream>
+#include <stdexcept>
+#include <cstring>
 #include <cstdlib>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <fcntl.h>
 #include <unistd.h>
-#include <cstring>
 
 //Constructors
 
@@ -57,7 +59,7 @@ void	Server::handleSignal(int signum) {
 }
 
 void	Server::start() {
-//Starts the server; Socket init and setup, then call the main loop to receive data/clients
+//Starts the server; Socket init, then call the main loop
 
 	_listenSocket = socket(AF_INET, SOCK_STREAM, 0);
 
@@ -74,7 +76,7 @@ void	Server::start() {
 }
 
 void	Server::mainLoop() {
-//Main loop; checks FDs for new connections, then incoming data
+//Main loop; checks [_pollFds] for new connections and incoming data/disconnections
 
 	while (_signal == false) {
 		if (poll(_pollFds.data(), _pollFds.size(), -1) == -1 && Server::_signal == false) {
@@ -109,7 +111,7 @@ void	Server::mainLoop() {
 }
 
 void	Server::newClient() {
-//Adds a new client and gives it its own pollFd
+//Adds a new client to [_clients] and [_pollFds]
 
 	Client				client;
 	int					clientFd;
@@ -151,7 +153,7 @@ void	Server::removeClient(int fd) {
 }
 
 void	Server::receiveData(struct pollfd pollFd) {
-//Handles data sent from [pollFd]
+//Handles incoming data from [pollFd]
 	
 	char	buff[1024];
 

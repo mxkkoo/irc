@@ -13,9 +13,9 @@
 #pragma once
 
 #include "Client.hpp"
-#include <poll.h>
 #include <vector>
 #include <map>
+#include <poll.h>
 
 class Server
 {

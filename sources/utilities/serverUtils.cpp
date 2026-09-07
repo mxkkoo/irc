@@ -13,13 +13,14 @@
 #include "Client.hpp"
 #include <vector>
 #include <map>
+#include <stdexcept>
 #include <unistd.h>
 #include <netinet/in.h>
 #include <fcntl.h>
 #include <cstring>
 
 void	setupSocket(int listenSocket, int port) {
-// Sets all necessary options to the server listenSocket
+//Sets all necessary options to the server listenSocket
 
 	struct sockaddr_in	servAddress = {};
 	int 				enable = 1;
