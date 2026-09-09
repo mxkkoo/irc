@@ -13,7 +13,6 @@
 #pragma once
 
 #include <string>
-#include <poll.h>
 
 class Client
 {
@@ -29,7 +28,5 @@ class Client
 		std::string&	getBuffer();
 
 		void	setFd(int fd);
-		void	addToBuffer(const char* data, size_t len);
-		void	processBuffer();
-		void	processLine(std::string& line);
+		void	appendBuffer(const char* data, size_t len);
 };

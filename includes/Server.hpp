@@ -43,4 +43,6 @@ class Server
 		void		newClient();
 		void		removeClient(int fd);
 		void		receiveData(struct pollfd pollFd);
+		void		processBuffer(Client& client);
+		void		processLine(Client& client, std::string& line);
 };

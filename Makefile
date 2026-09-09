@@ -15,31 +15,32 @@ NAME = ircserv
 CPP = c++
 CFLAGS = -Wall -Werror -Wextra -Iincludes -std=c++98
 
-FILES = main.cpp \
-		Server.cpp \
-		Client.cpp \
-		utilities/serverUtils.cpp \
-		utilities/clientUtils.cpp \
-
-SRC = $(addprefix sources/, $(FILES))
-
-OBJ = $(addprefix obj/, $(patsubst %.cpp, %.o, $(FILES)))
+SOURCES = main.cpp $(wildcard sources/*.cpp sources/utilities/*.cpp)
+OBJECTS = $(addprefix objects/, $(patsubst %.cpp, %.o, $(SOURCES)))
 
 all : $(NAME)
 
-$(NAME) : $(OBJ)
-	$(CPP) $(CFLAGS) $(OBJ) -o $(NAME)
+$(NAME) : $(OBJECTS)
+	$(CPP) $(CFLAGS) $(OBJECTS) -o $(NAME)
 
-obj/%.o: sources/%.cpp
-	@mkdir -p $(dir $(NAME))
-	@mkdir -p $(dir $(OBJ))
+objects/main.o: main.cpp
+	@mkdir -p $(dir $@)
+	$(CPP) $(CFLAGS) -c $< -o $@
+
+objects/sources/%.o: sources/%.cpp
+	@mkdir -p $(dir $@)
+	$(CPP) $(CFLAGS) -c $< -o $@
+
+
+objects/sources/utilities/%.o: sources/utilities/%.cpp
+	@mkdir -p $(dir $@)
 	$(CPP) $(CFLAGS) -c $< -o $@
 
 clean : 
-	rm -rf obj
+	rm -rf objects
 
 fclean : clean
-	@rm -f $(NAME)
+	rm -f $(NAME)
 
 re : fclean all
 
