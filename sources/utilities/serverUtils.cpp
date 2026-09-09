@@ -6,7 +6,7 @@
 /*   By: kelyan <kyoussou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/04 15:36:48 by kelyan            #+#    #+#             */
-/*   Updated: 2026/09/04 15:42:11 by kelyan           ###   ########.fr       */
+/*   Updated: 2026/09/09 13:39:30 by kelyan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,20 @@ Client&	getClientByFd(int fd, std::map<int, Client>& clients) {
 	}
 
 	return (it->second);
+}
+
+std::string	toUpper(std::string string) {
+//Uppercases the string
+
+	std::string	newString;
+
+	newString = string;
+
+	for (size_t i = 0; i < newString.size(); i ++) {
+		newString[i] = std::toupper(string[i]);
+	}
+
+	return (newString);
 }
 
 std::vector<std::string>	parseLine(std::string& line) {

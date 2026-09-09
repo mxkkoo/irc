@@ -6,7 +6,7 @@
 /*   By: kyoussou <kyoussou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/07 14:10:08 by kyoussou          #+#    #+#             */
-/*   Updated: 2026/07/10 18:22:57 by kyoussou         ###   ########.fr       */
+/*   Updated: 2026/09/09 13:34:36 by kelyan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,9 +40,12 @@ class Server
 
 		void		start();
 		void		mainLoop();
+
 		void		newClient();
 		void		removeClient(int fd);
 		void		receiveData(struct pollfd pollFd);
+
 		void		processBuffer(Client& client);
 		void		processLine(Client& client, std::string& line);
+		void		dispatch(Client& client, std::string command, std::vector<std::string> args);
 };

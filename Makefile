@@ -15,7 +15,7 @@ NAME = ircserv
 CPP = c++
 CFLAGS = -Wall -Werror -Wextra -Iincludes -std=c++98
 
-SOURCES = main.cpp $(wildcard sources/*.cpp sources/utilities/*.cpp)
+SOURCES = main.cpp $(wildcard sources/*/*.cpp)
 OBJECTS = $(addprefix objects/, $(patsubst %.cpp, %.o, $(SOURCES)))
 
 all : $(NAME)
