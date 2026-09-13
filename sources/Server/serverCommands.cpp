@@ -13,6 +13,7 @@
 #include "Server.hpp"
 #include "Client.hpp"
 #include "utilities.hpp"
+#include <stdexcept>
 
 void	Server::handleCap(Client& client, std::vector<std::string>& args) {
 //Handles "CAP" response gracefully
@@ -41,6 +42,7 @@ void	Server::commandPass(Client& client, std::vector<std::string>& args) {
 
 	if (args[0] != _password) {
 		sendNumeric(client, "464", ":Password is incorrect");
+		throw (std::runtime_error("Client entered wrong password"));
 		return;
 	}
 
