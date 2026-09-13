@@ -149,7 +149,7 @@ void	sendNumeric(Client& client, std::string code, std::string message) {
 		nickname = "*";
 	}
 
-	line = ":ircserc " + code + " " + nickname + " " + message;
+	line = ":ircserv " + code + " " + nickname + " " + message;
 
 	sendLine(client.getFd(), line);
 }

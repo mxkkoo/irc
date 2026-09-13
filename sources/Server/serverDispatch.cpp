@@ -64,7 +64,10 @@ void	Server::dispatch(Client& client, std::string command, std::vector<std::stri
 
 	wasRegistered = client.isRegistered();
 
-	if (command == "PASS") {
+	if (command == "CAP") {
+		handleCap(client, args);
+	}
+	else if (command == "PASS") {
 		commandPass(client, args);
 	}
 	else if (command == "NICK") {
@@ -77,6 +80,6 @@ void	Server::dispatch(Client& client, std::string command, std::vector<std::stri
 		sendNumeric(client, "421", command + " :Unknown command");
 
 	if (!wasRegistered && client.isRegistered()) {
-		sendNumeric(client, "001", "Welcome to the IRC server");
+		sendNumeric(client, "001", ":Welcome to the IRC server");
 	}
 }

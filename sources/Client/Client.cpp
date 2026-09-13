@@ -15,7 +15,7 @@
 //Constructors
 
 Client::Client() {
-
+	_password = false;
 }
 
 Client::~Client() {

@@ -14,6 +14,18 @@
 #include "Client.hpp"
 #include "utilities.hpp"
 
+void	Server::handleCap(Client& client, std::vector<std::string>& args) {
+//Handles "CAP" response gracefully
+
+	if (!args.empty()) {
+		if (args[0] == "LS") {
+			sendLine(client.getFd(), "CAP * LS :");
+		}
+	}
+
+	return; 
+}
+
 void	Server::commandPass(Client& client, std::vector<std::string>& args) {
 //IRC "PASS" command: Registers [client] on password entry
 
@@ -81,10 +93,7 @@ void	Server::commandNick(Client& client, std::vector<std::string>& args) {
 
 	client.setNickname(args[0]);
 
-	if (currentNickname.empty()) {
-		sendLine(client.getFd(), ":ircserv NICK :" + args[0]);
-	}
-	else {
+	if (!currentNickname.empty()) {
 		sendLine(client.getFd(), ":" + currentNickname + " NICK :" + args[0]);
 	}
 }

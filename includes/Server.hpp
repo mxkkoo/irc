@@ -46,6 +46,8 @@ class Server
 		void		processLine(Client& client, std::string& line);
 		void		dispatch(Client& client, std::string command, std::vector<std::string> args);
 
+		void		handleCap(Client& client, std::vector<std::string>& args);
+
 		void		commandPass(Client& client, std::vector<std::string>& args);
 		void		commandNick(Client& client, std::vector<std::string>& args);
 		void		commandUser(Client& client, std::vector<std::string>& args);
