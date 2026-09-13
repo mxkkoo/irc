@@ -95,7 +95,7 @@ void	Server::commandNick(Client& client, std::vector<std::string>& args) {
 
 	client.setNickname(args[0]);
 
-	if (!currentNickname.empty()) {
+	if (!currentNickname.empty() && currentNickname != args[0]) {
 		sendLine(client.getFd(), ":" + currentNickname + " NICK :" + args[0]);
 	}
 }
