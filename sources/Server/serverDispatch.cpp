@@ -67,6 +67,9 @@ void	Server::dispatch(Client& client, std::string command, std::vector<std::stri
 	if (command == "CAP") {
 		handleCap(client, args);
 	}
+	else if (command == "PING") {
+		handlePing(client, args);
+	}
 	else if (command == "PASS") {
 		commandPass(client, args);
 	}

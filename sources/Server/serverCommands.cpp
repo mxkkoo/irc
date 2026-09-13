@@ -27,6 +27,23 @@ void	Server::handleCap(Client& client, std::vector<std::string>& args) {
 	return; 
 }
 
+void	Server::handlePing(Client& client, std::vector<std::string>& args) {
+//Handles "PONG" response
+
+	std::string	token;
+
+	if (args.empty()) {
+		token = "";
+	}
+	else {
+		token = args[0];
+	}
+
+	sendLine(client.getFd(), "PONG :" + token);
+
+	return;
+}
+
 void	Server::commandPass(Client& client, std::vector<std::string>& args) {
 //IRC "PASS" command: Registers [client] on password entry
 
