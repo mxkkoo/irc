@@ -6,7 +6,7 @@
 /*   By: kyoussou <kyoussou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/07 14:10:08 by kyoussou          #+#    #+#             */
-/*   Updated: 2026/09/09 13:34:36 by kelyan           ###   ########.fr       */
+/*   Updated: 2026/09/10 22:15:28 by kelyan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,9 +33,6 @@ class Server
 		Server(char* av[]);
 		~Server();
 
-		int			getPort() const;
-		std::string	getPassword() const;
-		
 		static void	handleSignal(int signum);
 
 		void		start();
@@ -48,4 +45,8 @@ class Server
 		void		processBuffer(Client& client);
 		void		processLine(Client& client, std::string& line);
 		void		dispatch(Client& client, std::string command, std::vector<std::string> args);
+
+		void		commandPass(Client& client, std::vector<std::string>& args);
+		void		commandNick(Client& client, std::vector<std::string>& args);
+		void		commandUser(Client& client, std::vector<std::string>& args);
 };

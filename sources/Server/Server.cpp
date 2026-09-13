@@ -6,7 +6,7 @@
 /*   By: kyoussou <kyoussou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/07 14:23:20 by kyoussou          #+#    #+#             */
-/*   Updated: 2026/09/09 13:39:32 by kelyan           ###   ########.fr       */
+/*   Updated: 2026/09/10 20:17:11 by kelyan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,16 +36,6 @@ Server::Server(char* av[]) {
 }
 
 Server::~Server() {
-}
-
-//Getters
-
-int	Server::getPort() const {
-	return (_port);
-}
-
-std::string	Server::getPassword() const {
-	return (_password);
 }
 
 //Methods

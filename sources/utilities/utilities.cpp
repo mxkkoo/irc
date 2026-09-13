@@ -6,11 +6,12 @@
 /*   By: kelyan <kyoussou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/04 15:36:48 by kelyan            #+#    #+#             */
-/*   Updated: 2026/09/09 13:39:30 by kelyan           ###   ########.fr       */
+/*   Updated: 2026/09/10 20:38:10 by kelyan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Client.hpp"
+#include "utilities.hpp"
 #include <vector>
 #include <map>
 #include <stdexcept>
@@ -81,18 +82,18 @@ Client&	getClientByFd(int fd, std::map<int, Client>& clients) {
 	return (it->second);
 }
 
-std::string	toUpper(std::string string) {
-//Uppercases the string
+Client&	getClientByNickname(std::string nickname, std::map<int, Client>& clients) {
+//Returns the client with the corresponding [nickname]
 
-	std::string	newString;
-
-	newString = string;
-
-	for (size_t i = 0; i < newString.size(); i ++) {
-		newString[i] = std::toupper(string[i]);
+	std::map<int, Client>::iterator	it;
+	
+	for (it = clients.begin(); it != clients.end(); ++it) {
+		if (it->second.hasNickname() && toUpper(it->second.getNickname()) == toUpper(nickname)) {
+			return (it->second);
+		}
 	}
 
-	return (newString);
+	throw (std::runtime_error("Invalid Nickname"));
 }
 
 std::vector<std::string>	parseLine(std::string& line) {
@@ -123,4 +124,68 @@ std::vector<std::string>	parseLine(std::string& line) {
 	}
 
 	return (tokens);
+}
+
+void	sendLine(int fd, std::string line) {
+//Sends [line] to [fd]
+
+	std::string	message;
+
+	message = line + "\r\n";
+
+	send(fd, message.c_str(), message.size(), 0);
+}
+
+void	sendNumeric(Client& client, std::string code, std::string message) {
+//Sends a IRC format numeric reply to [client] FD
+
+	std::string	nickname;
+	std::string	line;
+
+	if (client.hasNickname()) {
+		nickname = client.getNickname();
+	}
+	else {
+		nickname = "*";
+	}
+
+	line = ":ircserc " + code + " " + nickname + " " + message;
+
+	sendLine(client.getFd(), line);
+}
+
+bool	validNickname(std::string nickname) {
+//Checks the validity of [nickname]
+
+	if (nickname.empty() || nickname.size() > 9) {
+		return (false);
+	}
+
+	if (!std::isalpha(static_cast<unsigned char>(nickname[0]))) {
+		return (false);
+	}
+
+	for (size_t i = 1; i < nickname.size(); ++i) {
+		if (!std::isalnum(static_cast<unsigned char>(nickname[i]))) {
+			if (nickname[i] != '-' && nickname[i] != '_') {
+				return (false);
+			}
+		}
+	}
+
+	return (true);
+}
+
+std::string	toUpper(std::string string) {
+//Uppercases the string
+
+	std::string	newString;
+
+	newString = string;
+
+	for (size_t i = 0; i < newString.size(); i ++) {
+		newString[i] = std::toupper(string[i]);
+	}
+
+	return (newString);
 }

@@ -6,7 +6,7 @@
 /*   By: kelyan <kyoussou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/04 15:42:43 by kelyan            #+#    #+#             */
-/*   Updated: 2026/09/09 13:36:13 by kelyan           ###   ########.fr       */
+/*   Updated: 2026/09/10 22:14:43 by kelyan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,13 +17,18 @@
 #include <vector>
 #include <map>
 
-//Server Utils
-
 void	setupSocket(int listenSocket, int port);
 void	closeSocket(std::vector<struct pollfd>& pollFds);
 
-std::vector<std::string>	parseLine(std::string& line);
-
 void		addFdToPoll(int fd, std::vector<struct pollfd>& pollFds);
 Client&		getClientByFd(int fd, std::map<int, Client>& clients);
+Client&		getClientByNickname(std::string nickname, std::map<int, Client>& clients);
+
+std::vector<std::string>	parseLine(std::string& line);
+
+void	sendLine(int fd, std::string line);
+void	sendNumeric(Client& client, std::string code, std::string message);
+
+bool	validNickname(std::string nickname);
+
 std::string	toUpper(std::string string);

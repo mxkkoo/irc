@@ -33,7 +33,6 @@ void	Server::processBuffer(Client& client) {
 		buffer.erase(0, pos + 1);
 		
 		if (!line.empty()) {
-			std::cout << "line: " << line << std::endl;
 			processLine(client, line);
 		}
 
@@ -61,8 +60,23 @@ void	Server::processLine(Client& client, std::string& line) {
 void	Server::dispatch(Client& client, std::string command, std::vector<std::string> args) {
 //Executes [command] with given [args]
 
-	std::cout << "command: " << command << std::endl;
+	bool	wasRegistered;
 
-	(void) client;
-	(void) args;
+	wasRegistered = client.isRegistered();
+
+	if (command == "PASS") {
+		commandPass(client, args);
+	}
+	else if (command == "NICK") {
+		commandNick(client, args);
+	}
+	else if (command == "USER") {
+		commandUser(client, args);
+	}
+	else
+		sendNumeric(client, "421", command + " :Unknown command");
+
+	if (!wasRegistered && client.isRegistered()) {
+		sendNumeric(client, "001", "Welcome to the IRC server");
+	}
 }
