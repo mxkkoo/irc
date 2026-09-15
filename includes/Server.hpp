@@ -6,26 +6,29 @@
 /*   By: kyoussou <kyoussou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/07 14:10:08 by kyoussou          #+#    #+#             */
-/*   Updated: 2026/09/10 22:15:28 by kelyan           ###   ########.fr       */
+/*   Updated: 2026/09/15 17:02:26 by kelyan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
 #include "Client.hpp"
+#include "Channel.hpp"
 #include <vector>
 #include <map>
 #include <poll.h>
 
-class Server
-{
+class Server {
+//Server class: Everything needed to run and use the server
+
 	private:
 		int							_port;
 		std::string					_password;
 
-		int							_listenSocket;
-		std::map<int, Client>		_clients;
-		std::vector<struct pollfd>	_pollFds;
+		int								_listenSocket;
+		std::map<int, Client>			_clients;
+		std::map<std::string, Channel>	_channels;
+		std::vector<struct pollfd>		_pollFds;
 
 		static bool					_signal;
 
@@ -52,4 +55,5 @@ class Server
 		void		commandPass(Client& client, std::vector<std::string>& args);
 		void		commandNick(Client& client, std::vector<std::string>& args);
 		void		commandUser(Client& client, std::vector<std::string>& args);
+		void		commandJoin(Client& client, std::vector<std::string>& args);
 };

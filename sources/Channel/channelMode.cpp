@@ -1,46 +1,41 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Channel.cpp                                        :+:      :+:    :+:   */
+/*   channelMode.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kelyan <kyoussou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/09/15 17:14:07 by kelyan            #+#    #+#             */
-/*   Updated: 2026/09/15 17:50:42 by kelyan           ###   ########.fr       */
+/*   Created: 2026/09/15 17:42:20 by kelyan            #+#    #+#             */
+/*   Updated: 2026/09/15 17:50:13 by kelyan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Channel.hpp"
 
-//Constructors
-
-Channel::Channel(std::string name) {
-	_name = name;
-	_topic = "";
-
-	_key = "";
-	_memberLimit = 0;
-	_inviteOnly = false;
+void	Channel::setTopic(std::string topic) {
+	_topic = topic;
 }
 
-//Methods
-
-std::string	Channel::getName() {
-	return (_name);
+bool	Channel::isInviteOnly() {
+	return (_inviteOnly);
 }
 
-std::string	Channel::getTopic() {
-	return (_topic);
+void	Channel::setInviteOnly(bool status) {
+	_inviteOnly = status;
 }
 
-std::string	Channel::getKey() {
-	return (_key);
+bool	Channel::hasKey() {
+	return (!_key.empty());
 }
 
-size_t		Channel::getMemberCount() {
-	return (_members.size());
+void	Channel::setKey(std::string key) {
+	_key = key;
 }
 
-size_t		Channel::getMemberLimit() {
-	return (_memberLimit);
+bool	Channel::hasMemberLimit() {
+	return (_memberLimit != 0);
+}
+
+void	Channel::setLimit(size_t limit) {
+	_memberLimit = limit;
 }

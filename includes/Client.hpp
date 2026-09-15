@@ -6,7 +6,7 @@
 /*   By: kyoussou <kyoussou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/10 16:32:10 by kyoussou          #+#    #+#             */
-/*   Updated: 2026/09/10 18:53:13 by kelyan           ###   ########.fr       */
+/*   Updated: 2026/09/15 16:29:57 by kelyan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,9 @@
 
 #include <string>
 
-class Client
-{
+class Client {
+//Client class: User specific informations and methods
+
 	private:
 		int				_fd;
 		std::string		_buffer;
