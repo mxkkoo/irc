@@ -14,6 +14,8 @@
 #include "utilities.hpp"
 #include <vector>
 #include <map>
+#include <set>
+#include <iostream>
 #include <stdexcept>
 #include <poll.h>
 #include <unistd.h>
@@ -152,6 +154,35 @@ void	sendNumeric(Client& client, std::string code, std::string message) {
 	line = ":ircserv " + code + " " + nickname + " " + message;
 
 	sendLine(client.getFd(), line);
+}
+
+void	clientBroadcast(Client& client, std::map<std::string, Channel>& channels, std::string line) {
+//Broacasts a message to all clients sharing a channel with [client]
+
+	std::map<std::string, Channel>::iterator	it;
+	std::set<int>								notified;
+
+	for (it = channels.begin(); it != channels.end(); it++) {
+		if (it->second.isMember(client)) {
+			std::vector<int>	members;
+
+			members = it->second.getMembers();
+
+			for (size_t	i = 0; i < members.size(); i++) {
+				if (members[i] == client.getFd()) {
+					continue;
+				}
+
+				if (notified.find(members[i]) != notified.end()) {
+					continue;
+				}
+
+				sendLine(members[i], line);
+
+				notified.insert(members[i]);
+			}
+		}
+	}
 }
 
 bool	validNickname(std::string nickname) {

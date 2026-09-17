@@ -31,6 +31,7 @@ void	sendLine(int fd, std::string line);
 void	sendNumeric(Client& client, std::string code, std::string message);
 
 bool	validNickname(std::string nickname);
+void	clientBroadcast(Client& client, std::map<std::string, Channel>& channels, std::string line);
 
 void		joinChannel(Client& client, Channel& channel, std::string key);
 std::string	joinMessage(Client& client, Channel& channel);

@@ -52,6 +52,10 @@ size_t		Channel::getMemberLimit() {
 	return (_memberLimit);
 }
 
+std::vector<int>	Channel::getMembers() {
+	return (_members);
+}
+
 void	Channel::broadcast(std::string line, int excludeFd) {
 //Sends [line] to [_members], excluding [excludeFd]
 

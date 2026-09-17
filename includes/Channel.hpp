@@ -35,11 +35,12 @@ class	Channel {
 		Channel(std::string name);
 		~Channel();
 
-		std::string	getName();
-		std::string	getTopic();
-		std::string	getKey();
-		size_t		getMemberCount();
-		size_t		getMemberLimit();
+		std::string			getName();
+		std::string			getTopic();
+		std::string			getKey();
+		size_t				getMemberCount();
+		size_t				getMemberLimit();
+		std::vector<int>	getMembers();
 
 		void		broadcast(std::string line, int excludeFd);
 

@@ -14,7 +14,6 @@
 #include "Client.hpp"
 #include "Channel.hpp"
 #include "utilities.hpp"
-#include <iostream>
 #include <stdexcept>
 
 void	Server::handleCap(Client& client, std::vector<std::string>& args) {
@@ -116,6 +115,7 @@ void	Server::commandNick(Client& client, std::vector<std::string>& args) {
 
 	if (!currentNickname.empty() && currentNickname != args[0]) {
 		sendLine(client.getFd(), ":" + currentNickname + " NICK :" + args[0]);
+		clientBroadcast(client, _channels, ":" + currentNickname + " NICK :" + args[0]);
 	}
 }
 
