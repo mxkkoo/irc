@@ -14,6 +14,7 @@
 #include "Client.hpp"
 #include "Channel.hpp"
 #include "utilities.hpp"
+#include <iostream>
 #include <stdexcept>
 
 void	Server::handleCap(Client& client, std::vector<std::string>& args) {
@@ -176,13 +177,13 @@ void	Server::commandJoin(Client& client, std::vector<std::string>& args) {
 
 		Channel&	channel = _channels[name];
 
-		//channel.broadcast(joinMessage(client, channelName), -1);
+		channel.broadcast(joinMessage(client, channel), -1);
 
 		if (channel.getTopic().empty()) {
-			sendNumeric(client, "331", name + " :No topic is set");
+			sendNumeric(client, "331", channel.getName() + " :No topic is set");
 		}
 		else {
-			sendNumeric(client, "332", name + " :" + channel.getTopic());
+			sendNumeric(client, "332", channel.getName() + " :" + channel.getTopic());
 		}
 	}
 }

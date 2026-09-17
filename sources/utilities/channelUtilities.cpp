@@ -39,3 +39,12 @@ void	joinChannel(Client& client, Channel& channel, std::string key) {
 
 	channel.addMember(client);
 }
+
+std::string	joinMessage(Client& client, Channel& channel) {
+	std::string	message;
+
+	message = ":" + client.getNickname() + "!" + client.getUsername() +
+		"@localhost JOIN " + channel.getName();
+
+	return (message);
+}

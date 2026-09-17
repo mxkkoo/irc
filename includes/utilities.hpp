@@ -32,7 +32,8 @@ void	sendNumeric(Client& client, std::string code, std::string message);
 
 bool	validNickname(std::string nickname);
 
-void	joinChannel(Client& client, Channel& channel, std::string key);
+void		joinChannel(Client& client, Channel& channel, std::string key);
+std::string	joinMessage(Client& client, Channel& channel);
 
 std::vector<std::string>	split(std::string str, char delim);
 std::string					toUpper(std::string string);

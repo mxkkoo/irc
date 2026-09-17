@@ -41,6 +41,8 @@ class	Channel {
 		size_t		getMemberCount();
 		size_t		getMemberLimit();
 
+		void		broadcast(std::string line, int excludeFd);
+
 		bool		isMember(Client& client);
 		void		addMember(Client& client);
 		void		removeMember(Client& client);

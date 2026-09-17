@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "Channel.hpp"
+#include "utilities.hpp"
 
 //Constructors
 
@@ -49,4 +50,14 @@ size_t		Channel::getMemberCount() {
 
 size_t		Channel::getMemberLimit() {
 	return (_memberLimit);
+}
+
+void	Channel::broadcast(std::string line, int excludeFd) {
+//Sends [line] to [_members], excluding [excludeFd]
+
+	for (size_t i = 0; i < _members.size(); i++) {
+		if (_members[i] != excludeFd) {
+			sendLine(_members[i], line);
+		}
+	}
 }
