@@ -187,3 +187,61 @@ void	Server::commandJoin(Client& client, std::vector<std::string>& args) {
 		}
 	}
 }
+
+void	Server::commandPrivmsg(Client& client, std::vector<std::string>& args) {
+//IRC "PRIVMSG" command: handles client messaging
+
+	std::string	recipient;
+	std::string	message;
+	std::string	line;
+
+	if (!client.isRegistered()) {
+		throw (std::runtime_error("Client not registered"));
+	}
+
+	if (args.empty()) {
+		sendNumeric(client, "411", ":No recipient given");
+		return;
+	}
+
+	if (args.size() < 2) {
+		sendNumeric(client, "412", ":Empty message");
+		return;
+	}
+
+	recipient = args[0];
+	message = args[1];
+
+	if (recipient[0] == '#') {
+		if (_channels.find(recipient) == _channels.end()) {
+			sendNumeric(client, "403", recipient + " :Channel not found");
+			return;
+		}
+
+		Channel	&channel = _channels[recipient];
+
+		if (!channel.isMember(client)) {
+			sendNumeric(client, "442", recipient + " :You are not a member of this channel");
+			return;
+		}
+
+		line = ":" + client.getNickname() + "!" + client.getUsername() +
+			"@localhost PRIVMSG " + recipient + " :" + message;
+
+		channel.broadcast(line, client.getFd());
+	}
+	else {
+		try {
+			Client& targetClient = getClientByNickname(recipient, _clients);
+			
+			line = ":" + client.getNickname() + "!" + client.getUsername() +
+				"@localhost PRIVMSG " + recipient + " :" + message;
+
+			sendLine(targetClient.getFd(), line);
+		}
+		catch (std::exception& e) {
+			sendNumeric(client, "401", recipient + " :User not found");
+			return;
+		}
+	}
+}

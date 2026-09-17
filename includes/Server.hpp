@@ -56,4 +56,5 @@ class Server {
 		void		commandNick(Client& client, std::vector<std::string>& args);
 		void		commandUser(Client& client, std::vector<std::string>& args);
 		void		commandJoin(Client& client, std::vector<std::string>& args);
+		void		commandPrivmsg(Client& client, std::vector<std::string>& args);
 };

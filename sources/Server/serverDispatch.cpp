@@ -12,7 +12,6 @@
 
 #include "Server.hpp"
 #include "utilities.hpp"
-#include <iostream>
 
 void	Server::processBuffer(Client& client) {
 //Extracts lines from [client] buffer then processes them
@@ -82,6 +81,9 @@ void	Server::dispatch(Client& client, std::string command, std::vector<std::stri
 		}
 		else if (command == "JOIN") {
 			commandJoin(client, args);
+		}
+		else if (command == "PRIVMSG") {
+			commandPrivmsg(client, args);
 		}
 		else
 			sendNumeric(client, "421", command + " :Unknown command");
