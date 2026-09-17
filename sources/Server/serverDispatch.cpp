@@ -63,6 +63,9 @@ void	Server::dispatch(Client& client, std::string command, std::vector<std::stri
 
 	wasRegistered = client.isRegistered();
 
+	if (command == "QUIT")
+		commandQuit(client, args);
+
 	try {
 		if (command == "CAP") {
 			handleCap(client, args);

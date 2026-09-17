@@ -88,7 +88,6 @@ void	Server::mainLoop() {
 					receiveData(_pollFds[i]);
 				}
 				catch(std::exception& e) {
-					removeClient(_pollFds[i].fd);
 					i --;
 				}
 			}
@@ -126,8 +125,26 @@ void	Server::newClient() {
 	std::cout << "Client " << clientFd << " connected" << std::endl;
 }
 
-void	Server::removeClient(int fd) {
-//Removes the client from [_pollFds], [_clients] and closes [fd]
+void	Server::removeClient(int fd, std::string message) {
+//Removes the client from all channels, [_pollFds], [_clients] and closes [fd];
+
+	std::map<std::string, Channel>::iterator	it;
+	std::string									quitMessage;
+	Client&										client = getClientByFd(fd, _clients);
+
+	quitMessage = ":" + client.getNickname() + "!" + client.getUsername() +
+		"@localhost QUIT :" + message;
+
+	clientBroadcast(client, _channels, quitMessage);
+
+	for (it = _channels.begin(); it != _channels.end(); ++it) {
+		it->second.removeMember(client);
+		it->second.removeOperator(client);
+
+		if (it->second.getMemberCount() == 0) {
+			_channels.erase(it->second.getName());
+		}
+	}
 
 	for (size_t i = 0; i < _pollFds.size(); i++) {
 		if (_pollFds[i].fd == fd) {
@@ -152,6 +169,7 @@ void	Server::receiveData(struct pollfd pollFd) {
 	ssize_t	len = recv(pollFd.fd, buff, sizeof(buff) - 1, 0);
 
 	if (len <= 0) {
+		removeClient(pollFd.fd, "Connection lost");
 		throw (std::runtime_error("Client disconnected"));
 	}
 

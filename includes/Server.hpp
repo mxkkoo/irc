@@ -42,7 +42,7 @@ class Server {
 		void		mainLoop();
 
 		void		newClient();
-		void		removeClient(int fd);
+		void		removeClient(int fd, std::string message);
 		void		receiveData(struct pollfd pollFd);
 
 		void		processBuffer(Client& client);
@@ -52,6 +52,7 @@ class Server {
 		void		handleCap(Client& client, std::vector<std::string>& args);
 		void		handlePing(Client& client, std::vector<std::string>& args);
 
+		void		commandQuit(Client& client, std::vector<std::string>& args);
 		void		commandPass(Client& client, std::vector<std::string>& args);
 		void		commandNick(Client& client, std::vector<std::string>& args);
 		void		commandUser(Client& client, std::vector<std::string>& args);

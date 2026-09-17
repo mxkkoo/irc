@@ -16,6 +16,23 @@
 #include "utilities.hpp"
 #include <stdexcept>
 
+void	Server::commandQuit(Client& client, std::vector<std::string>& args) {
+//IRC "QUIT" command: disconnects [client] from the server
+
+	std::string	message;
+
+	if (args.empty()) {
+		message = "Client quit";
+	}
+	else {
+		message = args[0];
+	}
+
+	removeClient(client.getFd(), message);
+
+	throw (std::runtime_error("Client quit"));
+}
+
 void	Server::handleCap(Client& client, std::vector<std::string>& args) {
 //Handles "CAP" response gracefully
 
