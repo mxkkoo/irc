@@ -262,3 +262,60 @@ void	Server::commandPrivmsg(Client& client, std::vector<std::string>& args) {
 		}
 	}
 }
+
+void	Server::commandPart(Client& client, std::vector<std::string>& args) {
+//IRC "PART" command: makes [client] leave the specified channel(s)
+
+	std::vector<std::string>	channels;
+	std::string					message;
+
+	if (!client.isRegistered()) {
+		throw (std::runtime_error("Client not registered"));
+	}
+
+	if (args.empty()) {
+		sendNumeric(client, "461", "PART :Not enough parameters");
+		return;
+	}
+
+	channels = split(args[0], ',');
+
+	if (args.size() > 1) {
+		message = args[1];
+	}
+	else {
+		message = client.getNickname();
+	}
+
+	for (size_t i = 0; i < channels.size(); i++) {
+		std::string									name;
+		std::string									line;
+		std::map<std::string, Channel>::iterator	it;
+
+		name = channels[i];
+		it = _channels.find(name);
+
+		if (it == _channels.end()) {
+			sendNumeric(client, "403", name + " :Channel not found");
+			continue;
+		}
+
+		Channel&	channel = it->second;
+
+		if (!channel.isMember(client)) {
+			sendNumeric(client, "442", channel.getName() + " :You are not a member of this channel");
+			continue;
+		}
+
+		line = ":" + client.getNickname() + "!" + client.getUsername() +
+			"@localhost PART " + channel.getName() + " :" + message;
+
+		channel.broadcast(line, -1);
+		channel.removeMember(client);
+		channel.removeOperator(client);
+
+		if (channel.getMemberCount() == 0) {
+			_channels.erase(channel.getName());
+		}
+	}
+}

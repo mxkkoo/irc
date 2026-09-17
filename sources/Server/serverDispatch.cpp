@@ -88,6 +88,9 @@ void	Server::dispatch(Client& client, std::string command, std::vector<std::stri
 		else if (command == "PRIVMSG") {
 			commandPrivmsg(client, args);
 		}
+		else if (command == "PART") {
+			commandPart(client, args);
+		}
 		else
 			sendNumeric(client, "421", command + " :Unknown command");
 	}
