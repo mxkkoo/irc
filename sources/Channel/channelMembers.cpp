@@ -73,3 +73,34 @@ void	Channel::removeOperator(Client& client) {
 		}
 	}
 }
+
+bool	Channel::isInvited(Client& client) {
+	for (size_t i = 0; i < _invited.size(); i++) {
+		if (client.getFd() == _invited[i]) {
+			return (true);
+		}
+	}
+
+	return (false);
+}
+
+void	Channel::addInvited(Client& client) {
+	if (isInvited(client)) {
+		return;
+	}
+
+	_invited.push_back(client.getFd());
+}
+
+void	Channel::removeInvited(Client& client) {
+	if (!isInvited(client)) {
+		return;
+	}
+
+	for (size_t i = 0; i < _invited.size(); i++) {
+		if (client.getFd() == _invited[i]) {
+			_invited.erase(_invited.begin() + i);
+			return;
+		}
+	}
+}

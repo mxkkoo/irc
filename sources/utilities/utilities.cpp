@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   serverUtils.cpp                                    :+:      :+:    :+:   */
+/*   utilities.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kelyan <kyoussou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/04 15:36:48 by kelyan            #+#    #+#             */
-/*   Updated: 2026/09/10 20:38:10 by kelyan           ###   ########.fr       */
+/*   Updated: 2026/09/15 19:07:18 by kelyan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -174,6 +174,26 @@ bool	validNickname(std::string nickname) {
 	}
 
 	return (true);
+}
+
+std::vector<std::string>	split(std::string str, char delim) {
+//Returns a vector of parts of [str] split by [delim]
+
+	std::vector<std::string>	tokens;
+	size_t						start;
+	size_t						end;
+
+	start = 0;
+	end = str.find(delim, start);
+
+	while (end != std::string::npos) {
+		tokens.push_back(str.substr(start, end - start));
+		start = end + 1;
+	}
+
+	tokens.push_back(str.substr(start));
+
+	return (tokens);
 }
 
 std::string	toUpper(std::string string) {

@@ -22,6 +22,7 @@ class	Channel {
 	private:
 		std::vector<int>	_operators;
 		std::vector<int>	_members;
+		std::vector<int>	_invited;
 		std::string			_name;
 		std::string			_topic;
 
@@ -30,6 +31,7 @@ class	Channel {
 		bool				_inviteOnly;
 
 	public:
+		Channel();
 		Channel(std::string name);
 		~Channel();
 

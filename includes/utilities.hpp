@@ -13,6 +13,7 @@
 #pragma once
 
 #include "Client.hpp"
+#include "Channel.hpp"
 #include <poll.h>
 #include <vector>
 #include <map>
@@ -31,4 +32,7 @@ void	sendNumeric(Client& client, std::string code, std::string message);
 
 bool	validNickname(std::string nickname);
 
-std::string	toUpper(std::string string);
+void	joinChannel(Client& client, Channel& channel, std::string key);
+
+std::vector<std::string>	split(std::string str, char delim);
+std::string					toUpper(std::string string);

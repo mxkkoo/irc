@@ -14,6 +14,9 @@
 
 //Constructors
 
+Channel::Channel() {
+}
+
 Channel::Channel(std::string name) {
 	_name = name;
 	_topic = "";
@@ -21,6 +24,9 @@ Channel::Channel(std::string name) {
 	_key = "";
 	_memberLimit = 0;
 	_inviteOnly = false;
+}
+
+Channel::~Channel() {
 }
 
 //Methods

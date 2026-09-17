@@ -64,23 +64,31 @@ void	Server::dispatch(Client& client, std::string command, std::vector<std::stri
 
 	wasRegistered = client.isRegistered();
 
-	if (command == "CAP") {
-		handleCap(client, args);
+	try {
+		if (command == "CAP") {
+			handleCap(client, args);
+		}
+		else if (command == "PING") {
+			handlePing(client, args);
+		}
+		else if (command == "PASS") {
+			commandPass(client, args);
+		}
+		else if (command == "NICK") {
+			commandNick(client, args);
+		}
+		else if (command == "USER") {
+			commandUser(client, args);
+		}
+		else if (command == "JOIN") {
+			commandJoin(client, args);
+		}
+		else
+			sendNumeric(client, "421", command + " :Unknown command");
 	}
-	else if (command == "PING") {
-		handlePing(client, args);
+	catch (std::exception& e) {
+		sendNumeric(client, "451", ":You are not registered");
 	}
-	else if (command == "PASS") {
-		commandPass(client, args);
-	}
-	else if (command == "NICK") {
-		commandNick(client, args);
-	}
-	else if (command == "USER") {
-		commandUser(client, args);
-	}
-	else
-		sendNumeric(client, "421", command + " :Unknown command");
 
 	if (!wasRegistered && client.isRegistered()) {
 		sendNumeric(client, "001", ":Welcome to the IRC server");
