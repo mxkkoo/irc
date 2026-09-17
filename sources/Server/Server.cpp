@@ -57,7 +57,16 @@ void	Server::start() {
 		throw std::runtime_error("socket() error");
 	}
 
-	setupSocket(_listenSocket, _port);
+	try {
+		setupSocket(_listenSocket, _port);
+	}
+	catch (std::exception& e) {
+		close(_listenSocket);
+
+		std::cerr << e.what() << std::endl;
+
+		throw (std::runtime_error("Server socket error"));
+	}
 
 	std::cout << "Server " << this->_listenSocket << " connected" << std::endl;
 
